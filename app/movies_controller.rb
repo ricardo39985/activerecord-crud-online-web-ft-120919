@@ -21,7 +21,7 @@ def can_be_created_with_a_hash_of_attributes
       lead: "Paul Newman",
       in_theaters: false
   }
-  movie = Movie.new(attributes)
+  Movie.create(attributes)
 end
 
 def can_be_created_in_a_block(args = {:title => 'Home Alone', :release_date => 1990})
@@ -29,11 +29,14 @@ def can_be_created_in_a_block(args = {:title => 'Home Alone', :release_date => 1
   # title == "Home Alone"
   # release_date == 1990
   
-  Movie.create do |m|
+  new_movie = Movie.create do |m|
     m.title = args[:title]
     m.release_date = args[:release_date]
-    
+    m.director = args[:director]  
+    m.lead = args[:lead]  
+    m.in_theaters = args[:in_theaters] 
   end
+  new_movie
 end
 
 def can_get_the_first_item_in_the_database
@@ -70,16 +73,17 @@ end
 def can_be_found_updated_and_saved
   # Updtate the title "Awesome Flick" to "Even Awesomer Flick", save it, then return it
   Movie.create(title: "Awesome Flick")
-  __
-  __
-  __
+  new_movie = Movie.find_by(title: "Awesome Flick")
+  new_movie.title = "Even Awesomer Flick"
+  new_movie.save
+ 
 end
 
 def can_update_using_update_method
   # Update movie title to "Wat, huh?"
-  Movie.create(title: "Wat?")
-  __
-  __
+  t= Movie.create(title: "Wat?")
+  t.title = "Wat, huh?"
+  t.save
 end
 
 def can_update_multiple_items_at_once
@@ -87,18 +91,27 @@ def can_update_multiple_items_at_once
   5.times do |i|
     Movie.create(title: "Movie_#{i}", release_date: 2000+i)
   end
-  __
+  5.times do |i|
+    t = Movie.find_by(title: "Movie_#{i}")
+    t.title = "A Movie"
+    t.save    
+  end
+
 end
 
 def can_destroy_a_single_item
   Movie.create(title: "That One Where the Guy Kicks Another Guy Once")
-  __
-  __
+  t = Movie.find_by(title: "That One Where the Guy Kicks Another Guy Once")
+  Movie.delete(t.id)
+ 
 end
 
 def can_destroy_all_items_at_once
   10.times do |i|
     Movie.create(title: "Movie_#{i}")
   end
-  __
+  10.times do |i|
+    t =   Movie.find_by(title: "Movie_#{i}")  
+    Movie.delete(t.id)
+  end
 end
